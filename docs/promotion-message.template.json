@@ -31,8 +31,8 @@
   "primaryType": "PromotionMessage",
   "message": {
     "anchorIdentity": "jaywisdom.eth",
-    "aarsSpecDigest": "REPLACE_AARS_SPEC_DIGEST",
-    "aarsSchemaDigest": "REPLACE_AARS_SCHEMA_DIGEST",
+    "aarsSpecDigest": "0xc3dc10a20f47ace56550c5a7ec93fc614a7b40aa74361efd2e3d247deca0ebc5",
+    "aarsSchemaDigest": "0x5cd52c970352562e201bab00684ff5789fe38596ec6e4e8d7ee0506833eed7a1",
     "srapProfileDigest": "REPLACE_SRAP_PROFILE_DIGEST",
     "vectorSuiteDigest": "REPLACE_VECTOR_SUITE_DIGEST",
     "parentStateRoot": "REPLACE_PARENT_STATE_ROOT",
