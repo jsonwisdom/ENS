@@ -1,0 +1,47 @@
+{
+  "domain": {
+    "name": "AARS Promotion",
+    "version": "1.0.0",
+    "chainId": 1,
+    "verifyingContract": "0x0000000000000000000000000000000000000000"
+  },
+  "types": {
+    "EIP712Domain": [
+      { "name": "name", "type": "string" },
+      { "name": "version", "type": "string" },
+      { "name": "chainId", "type": "uint256" },
+      { "name": "verifyingContract", "type": "address" }
+    ],
+    "PromotionMessage": [
+      { "name": "anchorIdentity", "type": "string" },
+      { "name": "aarsSpecDigest", "type": "bytes32" },
+      { "name": "aarsSchemaDigest", "type": "bytes32" },
+      { "name": "srapProfileDigest", "type": "bytes32" },
+      { "name": "vectorSuiteDigest", "type": "bytes32" },
+      { "name": "parentStateRoot", "type": "bytes32" },
+      { "name": "proposedStateRoot", "type": "bytes32" },
+      { "name": "promotionAction", "type": "string" },
+      { "name": "protocolDomain", "type": "string" },
+      { "name": "signerAddress", "type": "address" },
+      { "name": "ensResolutionEvidenceDigest", "type": "bytes32" },
+      { "name": "nonce", "type": "bytes32" },
+      { "name": "timestamp", "type": "uint256" }
+    ]
+  },
+  "primaryType": "PromotionMessage",
+  "message": {
+    "anchorIdentity": "jaywisdom.eth",
+    "aarsSpecDigest": "REPLACE_AARS_SPEC_DIGEST",
+    "aarsSchemaDigest": "REPLACE_AARS_SCHEMA_DIGEST",
+    "srapProfileDigest": "REPLACE_SRAP_PROFILE_DIGEST",
+    "vectorSuiteDigest": "REPLACE_VECTOR_SUITE_DIGEST",
+    "parentStateRoot": "REPLACE_PARENT_STATE_ROOT",
+    "proposedStateRoot": "REPLACE_PROPOSED_STATE_ROOT",
+    "promotionAction": "CANONICAL_COMMIT",
+    "protocolDomain": "AARS_v1_SRAP_v0.2.2",
+    "signerAddress": "REPLACE_AUTHORIZED_SIGNER_ADDRESS",
+    "ensResolutionEvidenceDigest": "REPLACE_ENS_RESOLUTION_EVIDENCE_DIGEST",
+    "nonce": "REPLACE_DERIVED_NONCE",
+    "timestamp": "REPLACE_UNIX_TIMESTAMP"
+  }
+}
