@@ -1,0 +1,47 @@
+{
+  "domain": {
+    "name": "AARS Promotion",
+    "version": "1.0.0",
+    "chainId": 1,
+    "verifyingContract": "0x0000000000000000000000000000000000000000"
+  },
+  "types": {
+    "EIP712Domain": [
+      { "name": "name", "type": "string" },
+      { "name": "version", "type": "string" },
+      { "name": "chainId", "type": "uint256" },
+      { "name": "verifyingContract", "type": "address" }
+    ],
+    "PromotionMessage": [
+      { "name": "anchorIdentity", "type": "string" },
+      { "name": "aarsSpecDigest", "type": "bytes32" },
+      { "name": "aarsSchemaDigest", "type": "bytes32" },
+      { "name": "srapProfileDigest", "type": "bytes32" },
+      { "name": "vectorSuiteDigest", "type": "bytes32" },
+      { "name": "parentStateRoot", "type": "bytes32" },
+      { "name": "proposedStateRoot", "type": "bytes32" },
+      { "name": "promotionAction", "type": "string" },
+      { "name": "protocolDomain", "type": "string" },
+      { "name": "signerAddress", "type": "address" },
+      { "name": "ensResolutionEvidenceDigest", "type": "bytes32" },
+      { "name": "nonce", "type": "bytes32" },
+      { "name": "timestamp", "type": "uint256" }
+    ]
+  },
+  "primaryType": "PromotionMessage",
+  "message": {
+    "anchorIdentity": "jaywisdom.eth",
+    "aarsSpecDigest": "0xc3dc10a20f47ace56550c5a7ec93fc614a7b40aa74361efd2e3d247deca0ebc5",
+    "aarsSchemaDigest": "0x5cd52c970352562e201bab00684ff5789fe38596ec6e4e8d7ee0506833eed7a1",
+    "srapProfileDigest": "0xcaec0341683f8bbbb9e7c85e878cc71ff421e24845a120da9723e476c3a963aa",
+    "vectorSuiteDigest": "0x3f08c618dd5153facc7ccd649a5fad3a64851acaee10a6f12b53d7c3172797eb",
+    "parentStateRoot": "0x401f102254ea44127f21bde1f2e53248155fcdc8d9723e663e2f1875d550b72b",
+    "proposedStateRoot": "0x15456a5410e054987bf484245340c8198baf832d630c39addb3cc67d338ff688",
+    "promotionAction": "CANONICAL_COMMIT",
+    "protocolDomain": "AARS_v1_SRAP_v0.2.2",
+    "signerAddress": "0x0000000000000000000000000000000000000000",
+    "ensResolutionEvidenceDigest": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "timestamp": 0
+  }
+}
