@@ -1,10 +1,11 @@
-name: Deploy AARS signer to GitHub Pages
+name: Test and deploy Chain Voice to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
       - "docs/**"
+      - "tests/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -18,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  test-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -26,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Enforce Chain Voice invariants
+        run: node tests/chain-voice.test.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload static site

@@ -4,204 +4,252 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <title>JSONWisdom Wallet Control Record</title>
+<title>Jason's Chain Voice</title>
   <style>
-    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f4f7f8;background:#080b0d}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:20px}.wrap{max-width:720px;margin:0 auto}.card{background:#111619;border:1px solid #2a353a;border-radius:18px;padding:20px;margin:14px 0}h1{font-size:1.8rem;margin:.3rem 0}.muted{color:#9eabb1}.big{font-size:1.05rem;line-height:1.5}.mono,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}button{width:100%;font:inherit;font-weight:800;border:0;border-radius:14px;padding:14px 16px;margin:6px 0;cursor:pointer}.primary{background:#baf7d5;color:#06120b}.secondary{background:#263238;color:#fff}button:disabled{opacity:.45;cursor:not-allowed}.status{white-space:pre-wrap;background:#080b0d;border-radius:12px;padding:14px;line-height:1.45}.ok{border-left:4px solid #7ff0b1}.warn{border-left:4px solid #f0c35a}.bad{border-left:4px solid #ff7b7b}pre{white-space:pre-wrap;background:#080b0d;border-radius:12px;padding:14px;max-height:360px;overflow:auto}.pill{display:inline-block;border:1px solid #38464c;border-radius:999px;padding:5px 9px;margin:3px 4px 3px 0;color:#c5d0d5;font-size:.85rem}
+    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f4f7f8;background:#080b0d}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:20px}.wrap{max-width:720px;margin:0 auto}.card{background:#111619;border:1px solid #2a353a;border-radius:18px;padding:20px;margin:14px 0}h1{font-size:1.8rem;margin:.3rem 0}h2{margin-top:.2rem}.muted{color:#9eabb1}.big{font-size:1.05rem;line-height:1.5}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}button,a.button{display:block;width:100%;font:inherit;font-weight:800;text-align:center;text-decoration:none;border:0;border-radius:14px;padding:14px 16px;margin:8px 0;cursor:pointer}.primary{background:#baf7d5;color:#06120b}.secondary{background:#263238;color:#fff}.voice{background:#175cd3;color:#fff}button:disabled{opacity:.45;cursor:not-allowed}.status{white-space:pre-wrap;background:#080b0d;border-radius:12px;padding:14px;line-height:1.45;overflow-wrap:anywhere}.ok{border-left:4px solid #7ff0b1}.warn{border-left:4px solid #f0c35a}.bad{border-left:4px solid #ff7b7b}.pill{display:inline-block;border:1px solid #38464c;border-radius:999px;padding:5px 9px;margin:3px 4px 3px 0;color:#c5d0d5;font-size:.85rem}.links{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:520px){.links{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <main class="wrap">
-  <h1>Wallet Control Record</h1>
-  <p class="muted big"><strong>jaywisdom.base.eth</strong> → mobile wallet control proof</p>
+  <h1>Jason's Chain Voice</h1>
+  <p class="muted big"><strong>jaywisdom.base.eth</strong> · GitHub → Base → EAS</p>
 
   <section class="card warn">
-    <strong>One job only.</strong>
-    <p>This page asks your wallet to sign one plain statement proving control of the expected controller address. It sends <strong>no transaction</strong>, requests <strong>no ETH</strong>, requests <strong>no token approval</strong>, and never asks for a seed phrase or private key.</p>
-    <span class="pill">Voice → Web3 intent</span><span class="pill">Wallet signature</span><span class="pill">Replayable record</span>
+    <strong>One record. One Base transaction.</strong>
+    <p>Your voice or tap prepares a self-attestation. Coinbase Wallet shows the final Base transaction before anything is written. This never asks for a seed phrase, private key, token approval, or token transfer.</p>
+    <span class="pill">Voice intent</span><span class="pill">Wallet confirmation</span><span class="pill">On-chain receipt</span>
   </section>
 
   <section class="card">
-    <h2>1. Connect wallet</h2>
+    <h2>1. Connect Coinbase Wallet</h2>
     <div class="status mono">Expected controller:\n0xa380552a27b0a5a2874ea7aa52cac09f542002e8</div>
+    <a id="openWallet" class="button secondary" hidden>Open in Coinbase Wallet</a>
     <button id="connect" class="primary">Connect Wallet</button>
     <div id="wallet" class="status">Not connected.</div>
   </section>
 
   <section class="card">
-    <h2>2. Create record</h2>
-    <p class="muted">Your wallet will show the exact statement before you approve the signature.</p>
-    <button id="create" class="primary" disabled>Create Control Record</button>
+    <h2>2. Speak or tap</h2>
+    <p class="muted">Say: “Create my wallet control record.” Voice only prepares the command; your wallet must still confirm the transaction.</p>
+    <button id="voice" class="voice" disabled>🎙 Speak Chain Command</button>
+    <button id="dryRun" class="secondary" disabled>Safe Dry Run — Sign Only</button>
+    <button id="create" class="primary" disabled>Create On-Chain Control Record</button>
     <div id="result" class="status">Waiting for the expected wallet.</div>
   </section>
 
   <section class="card">
-    <h2>3. Keep the receipt</h2>
-    <button id="copy" class="secondary" disabled>Copy Record</button>
-    <button id="download" class="secondary" disabled>Download JSON</button>
-    <pre id="receipt">No record yet.</pre>
+    <h2>3. Chain receipt</h2>
+    <div id="receipt" class="status mono">No on-chain record yet.</div>
+    <div class="links">
+      <a id="txLink" class="button secondary" hidden target="_blank" rel="noopener">View Base transaction</a>
+      <a id="easLink" class="button secondary" hidden target="_blank" rel="noopener">View EAS attestation</a>
+    </div>
   </section>
 </main>
 
-<script>
-(() => {
-  'use strict';
+<script type="module">
+import { BrowserProvider, Contract, AbiCoder, Interface } from 'https://cdn.jsdelivr.net/npm/ethers@6.13.5/+esm';
 
-  const EXPECTED = '0xa380552a27b0a5a2874ea7aa52cac09f542002e8';
-  const SUBJECT = 'jaywisdom.base.eth';
-  const ENS_NAME = 'jaywisdom.eth';
+const EXPECTED = '0xa380552a27b0a5a2874ea7aa52cac09f542002e8';
+const SUBJECT = 'jaywisdom.base.eth';
+const ENS_NAME = 'jaywisdom.eth';
+const BASE_CHAIN_ID = 8453;
+const BASE_CHAIN_HEX = '0x2105';
+const EAS = '0x4200000000000000000000000000000000000021';
+const SCHEMA_UID = '0x3969bb076acfb992af54d51274c5c868641ca5344e1aacd0b1f5e4f80ac0822f';
+const ZERO_UID = `0x${'0'.repeat(64)}`;
+const COMMAND = 'create my wallet control record';
+const ABI = [
+  'function attest((bytes32 schema,(address recipient,uint64 expirationTime,bool revocable,bytes32 refUID,bytes data,uint256 value) data) request) payable returns (bytes32)',
+  'event Attested(address indexed recipient,address indexed attester,bytes32 uid,bytes32 indexed schemaUID)'
+];
 
-  const connectButton = document.getElementById('connect');
-  const createButton = document.getElementById('create');
-  const copyButton = document.getElementById('copy');
-  const downloadButton = document.getElementById('download');
-  const walletBox = document.getElementById('wallet');
-  const resultBox = document.getElementById('result');
-  const receiptBox = document.getElementById('receipt');
+const $ = (id) => document.getElementById(id);
+const connectButton = $('connect');
+const voiceButton = $('voice');
+const dryRunButton = $('dryRun');
+const createButton = $('create');
+const openWallet = $('openWallet');
+const walletBox = $('wallet');
+const resultBox = $('result');
+const receiptBox = $('receipt');
+const txLink = $('txLink');
+const easLink = $('easLink');
+let account = null;
+let provider = null;
+let armedByVoice = false;
 
-  let account = null;
-  let record = null;
+function status(el, text, kind) {
+  el.textContent = text;
+  el.classList.remove('ok', 'warn', 'bad');
+  if (kind) el.classList.add(kind);
+}
 
-  const normalize = (value) => String(value || '').toLowerCase();
+function randomHex(bytes = 16) {
+  const data = crypto.getRandomValues(new Uint8Array(bytes));
+  return '0x' + Array.from(data, b => b.toString(16).padStart(2, '0')).join('');
+}
 
-  function status(el, text, kind) {
-    el.textContent = text;
-    el.classList.remove('ok', 'warn', 'bad');
-    if (kind) el.classList.add(kind);
-  }
+function buildStatement(mode) {
+  return JSON.stringify({
+    spec: 'JSONWISDOM_CHAIN_VOICE_CONTROL_V1',
+    subject: SUBJECT,
+    ens_name: ENS_NAME,
+    controller: account,
+    expected_controller: EXPECTED,
+    purpose: 'prove Coinbase Wallet control for Voice-to-Chain command central',
+    command: COMMAND,
+    command_input: armedByVoice ? 'VOICE' : 'TAP',
+    mode,
+    network: 'base-mainnet',
+    chain_id: BASE_CHAIN_ID,
+    eas_contract: EAS,
+    schema_uid: SCHEMA_UID,
+    issued_at: new Date().toISOString(),
+    nonce: randomHex(16),
+    authority_created: false
+  });
+}
 
-  function randomHex(bytes = 16) {
-    const data = crypto.getRandomValues(new Uint8Array(bytes));
-    return '0x' + Array.from(data, b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  function utf8ToHex(text) {
-    const bytes = new TextEncoder().encode(text);
-    return '0x' + Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  async function chainId() {
-    const value = await window.ethereum.request({ method: 'eth_chainId' });
-    return Number.parseInt(value, 16);
-  }
-
-  async function connect() {
-    if (!window.ethereum || typeof window.ethereum.request !== 'function') {
-      throw new Error('No injected Web3 wallet found. Open this page inside your mobile wallet browser or a browser with an Ethereum wallet extension.');
-    }
-
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    if (!accounts || !accounts.length) throw new Error('Wallet returned no account.');
-
-    account = accounts[0];
-    const observedChainId = await chainId();
-    const matches = normalize(account) === EXPECTED;
-
-    if (!matches) {
-      createButton.disabled = true;
-      status(walletBox,
-        `Connected: ${account}\nObserved chain ID: ${observedChainId}\n\nSTOP: this is not the expected controller wallet. Switch accounts in your wallet and reconnect.`,
-        'bad');
-      return;
-    }
-
-    createButton.disabled = false;
-    status(walletBox,
-      `MATCH ✅\nConnected: ${account}\nObserved chain ID: ${observedChainId}\n\nThis address matches the expected jaywisdom.base.eth controller candidate.`,
-      'ok');
-  }
-
-  async function createRecord() {
-    if (!account || normalize(account) !== EXPECTED) {
-      throw new Error('Expected controller wallet is not connected.');
-    }
-
-    const issuedAt = new Date().toISOString();
-    const nonce = randomHex(16);
-    const observedChainId = await chainId();
-
-    const message = [
-      'JSONWISDOM_WALLET_CONTROL_V1',
-      `subject=${SUBJECT}`,
-      `ens_name=${ENS_NAME}`,
-      `controller=${account}`,
-      'purpose=prove mobile wallet control for Voice-to-Chain command central',
-      'authority_created=false',
-      `issued_at=${issuedAt}`,
-      `nonce=${nonce}`
-    ].join('\n');
-
-    status(resultBox, 'Check your wallet. Approve only if the statement shown there matches this control-proof purpose.', 'warn');
-
-    const signature = await window.ethereum.request({
-      method: 'personal_sign',
-      params: [utf8ToHex(message), account]
-    });
-
-    record = {
-      spec: 'JSONWISDOM_WALLET_CONTROL_RECORD_V1',
-      subject: SUBJECT,
-      ens_name: ENS_NAME,
-      controller: account,
-      expected_controller: EXPECTED,
-      address_match: normalize(account) === EXPECTED,
-      observed_chain_id: observedChainId,
-      signature_scheme: 'personal_sign',
-      message,
-      signature,
-      issued_at: issuedAt,
-      nonce,
-      purpose: 'prove mobile wallet control for Voice-to-Chain command central',
-      authority_created: false,
-      chain_transaction_created: false,
-      external_signature_recovery: 'PENDING_REPLAY'
-    };
-
-    receiptBox.textContent = JSON.stringify(record, null, 2);
-    copyButton.disabled = false;
-    downloadButton.disabled = false;
-    status(resultBox,
-      'CONTROL RECORD CREATED ✅\n\nThe wallet produced a signature over the exact statement above. Independent signature recovery is still required before promoting WALLET_CONTROL_VERIFIED to TRUE.',
-      'ok');
-  }
-
-  async function copyRecord() {
-    if (!record) return;
-    await navigator.clipboard.writeText(JSON.stringify(record, null, 2));
-    copyButton.textContent = 'Copied ✅';
-    setTimeout(() => { copyButton.textContent = 'Copy Record'; }, 1400);
-  }
-
-  function downloadRecord() {
-    if (!record) return;
-    const blob = new Blob([JSON.stringify(record, null, 2) + '\n'], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'jaywisdom-base-eth-wallet-control-record-v1.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  connectButton.addEventListener('click', () => connect().catch(err => status(walletBox, `ERROR: ${err.message}`, 'bad')));
-  createButton.addEventListener('click', () => createRecord().catch(err => status(resultBox, `ERROR: ${err.message}`, 'bad')));
-  copyButton.addEventListener('click', () => copyRecord().catch(err => status(resultBox, `COPY ERROR: ${err.message}`, 'bad')));
-  downloadButton.addEventListener('click', downloadRecord);
-
-  if (window.ethereum && window.ethereum.on) {
-    window.ethereum.on('accountsChanged', () => {
-      account = null;
-      record = null;
-      createButton.disabled = true;
-      copyButton.disabled = true;
-      downloadButton.disabled = true;
-      status(walletBox, 'Wallet account changed. Reconnect.', 'warn');
-      status(resultBox, 'Waiting for the expected wallet.');
-      receiptBox.textContent = 'No record yet.';
+async function ensureBase() {
+  const current = await window.ethereum.request({ method: 'eth_chainId' });
+  if (current.toLowerCase() === BASE_CHAIN_HEX) return;
+  try {
+    await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BASE_CHAIN_HEX }] });
+  } catch (error) {
+    if (error.code !== 4902) throw error;
+    await window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+        chainId: BASE_CHAIN_HEX,
+        chainName: 'Base',
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        rpcUrls: ['https://mainnet.base.org'],
+        blockExplorerUrls: ['https://basescan.org']
+      }]
     });
   }
-})();
+}
+
+async function connect() {
+  if (!window.ethereum?.request) throw new Error('No wallet provider found. Open this page inside Coinbase Wallet.');
+  const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+  if (!accounts?.length) throw new Error('Wallet returned no account.');
+  account = accounts[0].toLowerCase();
+  if (account !== EXPECTED) {
+    voiceButton.disabled = dryRunButton.disabled = createButton.disabled = true;
+    status(walletBox, `Connected: ${account}\n\nSTOP: not the expected controller. Switch accounts and reconnect.`, 'bad');
+    return;
+  }
+  await ensureBase();
+  provider = new BrowserProvider(window.ethereum);
+  voiceButton.disabled = dryRunButton.disabled = createButton.disabled = false;
+  status(walletBox, `MATCH ✅\n${account}\nBase mainnet · chain ID ${BASE_CHAIN_ID}`, 'ok');
+}
+
+async function dryRun() {
+  if (account !== EXPECTED) throw new Error('Expected controller wallet is not connected.');
+  const statement = buildStatement('SIGNATURE_ONLY_DRY_RUN');
+  status(resultBox, 'Dry run prepared. Review the exact statement in Coinbase Wallet. No transaction will be sent.', 'warn');
+  const signature = await window.ethereum.request({
+    method: 'personal_sign',
+    params: ['0x' + Array.from(new TextEncoder().encode(statement), b => b.toString(16).padStart(2, '0')).join(''), account]
+  });
+  status(resultBox, `DRY RUN SIGNED ✅\nSignature: ${signature}\n\nchain_transaction_created=false\nauthority_created=false`, 'ok');
+}
+
+async function createRecord() {
+  if (account !== EXPECTED || !provider) throw new Error('Expected controller wallet is not connected.');
+  await ensureBase();
+  const network = await provider.getNetwork();
+  if (Number(network.chainId) !== BASE_CHAIN_ID) throw new Error(`Wrong network: ${network.chainId}. Expected Base 8453.`);
+
+  const statement = buildStatement('EAS_ONCHAIN_SELF_ATTESTATION');
+  const encoded = AbiCoder.defaultAbiCoder().encode(['string'], [statement]);
+  const signer = await provider.getSigner();
+  const eas = new Contract(EAS, ABI, signer);
+  status(resultBox, 'Wallet confirmation required. This transaction writes one EAS self-attestation on Base and spends gas only.', 'warn');
+
+  const tx = await eas.attest({
+    schema: SCHEMA_UID,
+    data: {
+      recipient: account,
+      expirationTime: 0,
+      revocable: true,
+      refUID: ZERO_UID,
+      data: encoded,
+      value: 0
+    }
+  });
+  txLink.href = `https://basescan.org/tx/${tx.hash}`;
+  txLink.hidden = false;
+  status(resultBox, `TRANSACTION SUBMITTED\n${tx.hash}\n\nWaiting for Base confirmation…`, 'warn');
+
+  const mined = await tx.wait();
+  if (mined.status !== 1) throw new Error('Base transaction reverted. No control record was created.');
+  const iface = new Interface(ABI);
+  let uid = null;
+  for (const log of mined.logs) {
+    try {
+      const parsed = iface.parseLog(log);
+      if (parsed?.name === 'Attested') { uid = parsed.args.uid; break; }
+    } catch {}
+  }
+  if (!uid) throw new Error(`Transaction confirmed, but the EAS UID could not be decoded. Verify transaction ${tx.hash} manually.`);
+
+  easLink.href = `https://base.easscan.org/attestation/view/${uid}`;
+  easLink.hidden = false;
+  receiptBox.textContent = [
+    'CONTROL RECORD CONFIRMED ✅',
+    `subject=${SUBJECT}`,
+    `controller=${account}`,
+    `chain_id=${BASE_CHAIN_ID}`,
+    `transaction=${tx.hash}`,
+    `eas_uid=${uid}`,
+    `block=${mined.blockNumber}`,
+    'authority_created=false',
+    'record_location=BASE_EAS'
+  ].join('\n');
+  status(resultBox, 'VOICE → WALLET → BASE → EAS ✅\nThe on-chain receipt is confirmed. No download is required.', 'ok');
+  createButton.disabled = true;
+}
+
+function startVoice() {
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Recognition) {
+    status(resultBox, 'Voice recognition is unavailable in this browser. Tap “Create On-Chain Control Record”; wallet confirmation remains mandatory.', 'warn');
+    return;
+  }
+  const recognition = new Recognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  status(resultBox, `Listening for: “${COMMAND}”`, 'warn');
+  recognition.onresult = (event) => {
+    const heard = event.results[0][0].transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
+    if (heard.includes('create') && heard.includes('wallet') && heard.includes('control') && heard.includes('record')) {
+      armedByVoice = true;
+      status(resultBox, `VOICE COMMAND MATCH ✅\nHeard: “${heard}”\n\nNow tap Create On-Chain Control Record and confirm in Coinbase Wallet.`, 'ok');
+    } else {
+      status(resultBox, `VOICE COMMAND NOT MATCHED\nHeard: “${heard}”\nNothing was sent.`, 'bad');
+    }
+  };
+  recognition.onerror = (event) => status(resultBox, `VOICE ERROR: ${event.error}\nNothing was sent.`, 'bad');
+  recognition.start();
+}
+
+const dappUrl = `https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(location.href)}`;
+openWallet.href = dappUrl;
+openWallet.hidden = Boolean(window.ethereum?.request);
+connectButton.addEventListener('click', () => connect().catch(error => status(walletBox, `BLOCKED: ${error.shortMessage || error.message}`, 'bad')));
+voiceButton.addEventListener('click', startVoice);
+dryRunButton.addEventListener('click', () => dryRun().catch(error => status(resultBox, `DRY RUN BLOCKED: ${error.shortMessage || error.message}`, 'bad')));
+createButton.addEventListener('click', () => createRecord().catch(error => status(resultBox, `ON-CHAIN RECORD BLOCKED: ${error.shortMessage || error.message}`, 'bad')));
+
+if (window.ethereum?.on) {
+  window.ethereum.on('accountsChanged', () => location.reload());
+  window.ethereum.on('chainChanged', () => location.reload());
+}
 </script>
 </body>
 </html>
