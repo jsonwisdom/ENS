@@ -20,7 +20,9 @@ VOICE OR TAP
   → EAS UID + HUMAN-READABLE LINKS
 ```
 
-Open the deployed control surface at:
+Deployment status: `BLOCKED_PENDING_PAGES_ENABLEMENT`.
+
+After repository Pages is enabled with **Source: GitHub Actions**, the control surface will publish at:
 
 https://jsonwisdom.github.io/ENS/control-proof.html
 
