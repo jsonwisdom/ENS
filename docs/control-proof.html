@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>JSONWisdom Wallet Control Record</title>
+  <style>
+    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f4f7f8;background:#080b0d}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:20px}.wrap{max-width:720px;margin:0 auto}.card{background:#111619;border:1px solid #2a353a;border-radius:18px;padding:20px;margin:14px 0}h1{font-size:1.8rem;margin:.3rem 0}.muted{color:#9eabb1}.big{font-size:1.05rem;line-height:1.5}.mono,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}button{width:100%;font:inherit;font-weight:800;border:0;border-radius:14px;padding:14px 16px;margin:6px 0;cursor:pointer}.primary{background:#baf7d5;color:#06120b}.secondary{background:#263238;color:#fff}button:disabled{opacity:.45;cursor:not-allowed}.status{white-space:pre-wrap;background:#080b0d;border-radius:12px;padding:14px;line-height:1.45}.ok{border-left:4px solid #7ff0b1}.warn{border-left:4px solid #f0c35a}.bad{border-left:4px solid #ff7b7b}pre{white-space:pre-wrap;background:#080b0d;border-radius:12px;padding:14px;max-height:360px;overflow:auto}.pill{display:inline-block;border:1px solid #38464c;border-radius:999px;padding:5px 9px;margin:3px 4px 3px 0;color:#c5d0d5;font-size:.85rem}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Wallet Control Record</h1>
+  <p class="muted big"><strong>jaywisdom.base.eth</strong> → mobile wallet control proof</p>
+
+  <section class="card warn">
+    <strong>One job only.</strong>
+    <p>This page asks your wallet to sign one plain statement proving control of the expected controller address. It sends <strong>no transaction</strong>, requests <strong>no ETH</strong>, requests <strong>no token approval</strong>, and never asks for a seed phrase or private key.</p>
+    <span class="pill">Voice → Web3 intent</span><span class="pill">Wallet signature</span><span class="pill">Replayable record</span>
+  </section>
+
+  <section class="card">
+    <h2>1. Connect wallet</h2>
+    <div class="status mono">Expected controller:\n0xa380552a27b0a5a2874ea7aa52cac09f542002e8</div>
+    <button id="connect" class="primary">Connect Wallet</button>
+    <div id="wallet" class="status">Not connected.</div>
+  </section>
+
+  <section class="card">
+    <h2>2. Create record</h2>
+    <p class="muted">Your wallet will show the exact statement before you approve the signature.</p>
+    <button id="create" class="primary" disabled>Create Control Record</button>
+    <div id="result" class="status">Waiting for the expected wallet.</div>
+  </section>
+
+  <section class="card">
+    <h2>3. Keep the receipt</h2>
+    <button id="copy" class="secondary" disabled>Copy Record</button>
+    <button id="download" class="secondary" disabled>Download JSON</button>
+    <pre id="receipt">No record yet.</pre>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const EXPECTED = '0xa380552a27b0a5a2874ea7aa52cac09f542002e8';
+  const SUBJECT = 'jaywisdom.base.eth';
+  const ENS_NAME = 'jaywisdom.eth';
+
+  const connectButton = document.getElementById('connect');
+  const createButton = document.getElementById('create');
+  const copyButton = document.getElementById('copy');
+  const downloadButton = document.getElementById('download');
+  const walletBox = document.getElementById('wallet');
+  const resultBox = document.getElementById('result');
+  const receiptBox = document.getElementById('receipt');
+
+  let account = null;
+  let record = null;
+
+  const normalize = (value) => String(value || '').toLowerCase();
+
+  function status(el, text, kind) {
+    el.textContent = text;
+    el.classList.remove('ok', 'warn', 'bad');
+    if (kind) el.classList.add(kind);
+  }
+
+  function randomHex(bytes = 16) {
+    const data = crypto.getRandomValues(new Uint8Array(bytes));
+    return '0x' + Array.from(data, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function utf8ToHex(text) {
+    const bytes = new TextEncoder().encode(text);
+    return '0x' + Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function chainId() {
+    const value = await window.ethereum.request({ method: 'eth_chainId' });
+    return Number.parseInt(value, 16);
+  }
+
+  async function connect() {
+    if (!window.ethereum || typeof window.ethereum.request !== 'function') {
+      throw new Error('No injected Web3 wallet found. Open this page inside your mobile wallet browser or a browser with an Ethereum wallet extension.');
+    }
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (!accounts || !accounts.length) throw new Error('Wallet returned no account.');
+
+    account = accounts[0];
+    const observedChainId = await chainId();
+    const matches = normalize(account) === EXPECTED;
+
+    if (!matches) {
+      createButton.disabled = true;
+      status(walletBox,
+        `Connected: ${account}\nObserved chain ID: ${observedChainId}\n\nSTOP: this is not the expected controller wallet. Switch accounts in your wallet and reconnect.`,
+        'bad');
+      return;
+    }
+
+    createButton.disabled = false;
+    status(walletBox,
+      `MATCH ✅\nConnected: ${account}\nObserved chain ID: ${observedChainId}\n\nThis address matches the expected jaywisdom.base.eth controller candidate.`,
+      'ok');
+  }
+
+  async function createRecord() {
+    if (!account || normalize(account) !== EXPECTED) {
+      throw new Error('Expected controller wallet is not connected.');
+    }
+
+    const issuedAt = new Date().toISOString();
+    const nonce = randomHex(16);
+    const observedChainId = await chainId();
+
+    const message = [
+      'JSONWISDOM_WALLET_CONTROL_V1',
+      `subject=${SUBJECT}`,
+      `ens_name=${ENS_NAME}`,
+      `controller=${account}`,
+      'purpose=prove mobile wallet control for Voice-to-Chain command central',
+      'authority_created=false',
+      `issued_at=${issuedAt}`,
+      `nonce=${nonce}`
+    ].join('\n');
+
+    status(resultBox, 'Check your wallet. Approve only if the statement shown there matches this control-proof purpose.', 'warn');
+
+    const signature = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [utf8ToHex(message), account]
+    });
+
+    record = {
+      spec: 'JSONWISDOM_WALLET_CONTROL_RECORD_V1',
+      subject: SUBJECT,
+      ens_name: ENS_NAME,
+      controller: account,
+      expected_controller: EXPECTED,
+      address_match: normalize(account) === EXPECTED,
+      observed_chain_id: observedChainId,
+      signature_scheme: 'personal_sign',
+      message,
+      signature,
+      issued_at: issuedAt,
+      nonce,
+      purpose: 'prove mobile wallet control for Voice-to-Chain command central',
+      authority_created: false,
+      chain_transaction_created: false,
+      external_signature_recovery: 'PENDING_REPLAY'
+    };
+
+    receiptBox.textContent = JSON.stringify(record, null, 2);
+    copyButton.disabled = false;
+    downloadButton.disabled = false;
+    status(resultBox,
+      'CONTROL RECORD CREATED ✅\n\nThe wallet produced a signature over the exact statement above. Independent signature recovery is still required before promoting WALLET_CONTROL_VERIFIED to TRUE.',
+      'ok');
+  }
+
+  async function copyRecord() {
+    if (!record) return;
+    await navigator.clipboard.writeText(JSON.stringify(record, null, 2));
+    copyButton.textContent = 'Copied ✅';
+    setTimeout(() => { copyButton.textContent = 'Copy Record'; }, 1400);
+  }
+
+  function downloadRecord() {
+    if (!record) return;
+    const blob = new Blob([JSON.stringify(record, null, 2) + '\n'], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'jaywisdom-base-eth-wallet-control-record-v1.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  connectButton.addEventListener('click', () => connect().catch(err => status(walletBox, `ERROR: ${err.message}`, 'bad')));
+  createButton.addEventListener('click', () => createRecord().catch(err => status(resultBox, `ERROR: ${err.message}`, 'bad')));
+  copyButton.addEventListener('click', () => copyRecord().catch(err => status(resultBox, `COPY ERROR: ${err.message}`, 'bad')));
+  downloadButton.addEventListener('click', downloadRecord);
+
+  if (window.ethereum && window.ethereum.on) {
+    window.ethereum.on('accountsChanged', () => {
+      account = null;
+      record = null;
+      createButton.disabled = true;
+      copyButton.disabled = true;
+      downloadButton.disabled = true;
+      status(walletBox, 'Wallet account changed. Reconnect.', 'warn');
+      status(resultBox, 'Waiting for the expected wallet.');
+      receiptBox.textContent = 'No record yet.';
+    });
+  }
+})();
+</script>
+</body>
+</html>
